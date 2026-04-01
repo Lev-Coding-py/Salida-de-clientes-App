@@ -51,6 +51,23 @@ La demo esta publicada en 👉 **[churnshield-api-p1gs.onrender.com](https://chu
 
 Para ello se guardo la imagen de Docker que ha sido subida a la web a traves de Docker Hub y se implanto en la pagina Render.
 
+## Posibles mejoras
+Posibles Mejoras 
+
+-Versionado de Modelos ML: Implementar una carpeta de versionado v1, v2, v3 para saber que versión se está utilizando o implementar nuevas versiones, ya que en casos reales los datos cambian y se debe reentrenar los datos. 
+
+-Una interfaz que me permita ver la cantidad de clientes en peligro y dashboards inteligentes. 
+
+-GitHub (CI/CD) para que cada vez que suba un código se ejecuten test automáticos. 
+
+-Utilizar un mejor modelo predictivo y utilizar método SHAP para ver influencia de variables. 
+
+-Generalizar el proyecto y utilizar la nube. 
+
+-Utilizar Streamlit que te permite transformar tus scripts de Python en dashboards interactivos en minutos. Sin embargo no permite total flexibilidad, ni escalabilidad. 
+
+- Conectar tu API de FastAPI con n8n para que el modelo detecte un riesgo de fuga se disparé un flujo automático, es decir, enviar un correo para alertar al equipo de ventas. 
+
 ---
 
 ## Frameworks y librerías
