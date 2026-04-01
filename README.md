@@ -21,7 +21,7 @@ Ingresa los datos a traves de una interfaz web, esta informacion se envia al bac
 
 ## Cómo está construido
 
-**Modelo de machine learning** — Se entreno con un modelo de regresion logistica que obtuvo un Recall del 85% que indica que es optimo para detectar salida de clientes sin equivocarse mucho.
+**Modelo de machine learning** — Se entreno con un modelo de regresion logistica que obtuvo un Recall del 85% que indica que es optimo para detectar salida de clientes sin equivocarse mucho. Ademas para conectar la interfaz web con el modelo ML se probo diferentes combinaciones utilizando MLflow hasta encontrar el mejor resultado y se guardo el mejor resultado con joblib.
 
 **FastAPI** — A traves de una API `/predecir` conecta el backend con la interfaz web.
 
