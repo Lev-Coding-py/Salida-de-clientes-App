@@ -3,12 +3,8 @@
 > Una aplicacion de Machine Learning que predice si un cliente esta a punto de irse.
 
 [![Demo en vivo](https://img.shields.io/badge/demo-en%20Render-5affb0?style=flat-square)](https://churnshield-api-p1gs.onrender.com/)
-[![Python](https://img.shields.io/badge/python-3.11-blue?style=flat-square)](https://www.python.org/)
-[![FastAPI](https://img.shields.io/badge/FastAPI-0.110-009688?style=flat-square)](https://fastapi.tiangolo.com/)
-[![Docker](https://img.shields.io/badge/docker-listo-2496ED?style=flat-square)](https://www.docker.com/)
 
 ---
-
 ![ChurnShield App](https://github.com/user-attachments/assets/e5c4619d-44cc-47c3-b340-a7a15765c422)
 
 ---
