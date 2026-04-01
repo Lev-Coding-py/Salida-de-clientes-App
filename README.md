@@ -9,7 +9,7 @@
 
 ---
 
-Todas las empresas pierden clientes, pero estas salidas pueden anticiparse. El dataset viene de una empresa Telco de la plataforma Kaggle.
+Todas las empresas pierden clientes, pero estas salidas pueden anticiparse. El dataset viene de una empresa Telco.
 
 ---
 
