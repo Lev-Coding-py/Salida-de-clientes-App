@@ -1,0 +1,24 @@
+artifact_path: file:c:/Users/LeonardoAI/Documents/IA/Machine Learning Engeniere/Salida
+  de Clientes/mlruns/1/models/m-663ece494cb84f1eacbc62219cef3379/artifacts
+flavors:
+  python_function:
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.sklearn
+    model_path: model.pkl
+    predict_fn: predict
+    python_version: 3.13.7
+  sklearn:
+    code: null
+    pickled_model: model.pkl
+    serialization_format: cloudpickle
+    sklearn_version: 1.8.0
+    skops_trusted_types: null
+mlflow_version: 3.10.1
+model_id: m-663ece494cb84f1eacbc62219cef3379
+model_size_bytes: 1331
+model_uuid: m-663ece494cb84f1eacbc62219cef3379
+prompts: null
+run_id: 9b81e4bb2e5f4d70a2db5471cac250ed
+utc_time_created: '2026-03-31 20:57:59.853773'

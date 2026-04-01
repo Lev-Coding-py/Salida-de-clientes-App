@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChurnShield</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Fraunces:wght@700&display=swap" rel="stylesheet">
+<style>
+
+/* colores principales */
+:root {
+  --bg: #0d0f14;
+  --card: #161a22;
+  --borde: #252c3a;
+  --amarillo: #e8ff6b;
+  --rojo: #ff5a5a;
+  --verde: #5affb0;
+  --texto: #e8eaf2;
+  --gris: #6b7490;
+}
+
+body {
+  background: var(--bg);
+  color: var(--texto);
+  font-family: 'DM Mono', monospace;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 16px;
+}
+
+header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+h1 {
+  font-family: 'Fraunces', serif;
+  font-size: 2.5rem;
+}
+
+/* input donde se pone la URL de la API */
+.api-url {
+  display: flex;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--borde);
+  padding: 10px;
+  border-radius: 8px;
+  width: 100%;
+  max-width: 600px;
+  margin-bottom: 20px;
+}
+
+.api-url input {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--amarillo);
+  outline: none;
+}
+
+/* bolita de estado (verde = ok, rojo = error) */
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--gris);
+  align-self: center;
+  flex-shrink: 0;
+}
+
+.dot.ok    { background: var(--verde); }
+.dot.error { background: var(--rojo); }
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--borde);
+  padding: 30px;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 600px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+}
+
+.campo label {
+  font-size: 12px;
+  margin-bottom: 5px;
+  color: var(--gris);
+}
+
+input, select {
+  background: var(--bg);
+  border: 1px solid var(--borde);
+  padding: 8px;
+  border-radius: 6px;
+  color: var(--texto);
+  font-family: 'DM Mono', monospace;
+}
+
+button#btnPredecir {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background: var(--amarillo);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+button#btnPredecir:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* resultado */
+#resultado {
+  display: none;
+  margin-top: 20px;
+}
+
+#resultado h3 {
+  margin-bottom: 4px;
+}
+
+.barra {
+  height: 6px;
+  background: var(--borde);
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
+.barra-fill {
+  height: 100%;
+  width: 0%;
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
+
+/* color de la barra según resultado */
+.churn    .barra-fill { background: var(--rojo); }
+.nochurn  .barra-fill { background: var(--verde); }
+
+#recomendaciones {
+  display: none;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--borde);
+}
+
+#recomendaciones h4 {
+  color: var(--amarillo);
+  margin-bottom: 12px;
+  font-size: 13px;
+}
+
+#recomendaciones ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#recomendaciones li {
+  font-size: 13px;
+  color: var(--texto);
+  padding: 10px 12px;
+  border-left: 3px solid var(--amarillo);
+  background: var(--bg);
+  border-radius: 4px;
+}
+
+#msgError {
+  display: none;
+  color: var(--rojo);
+  margin-top: 12px;
+  font-size: 13px;
+}
+
+</style>
+</head>
+<body>
+
+<header>
+  <h1>ChurnShield</h1>
+</header>
+
+<!-- URL base de la API -->
+<div class="api-url">
+  <input id="inputUrl" type="text" value="http://127.0.0.1:8000">
+  <div id="puntito" class="dot"></div>
+</div>
+
+<div class="card">
+  <div class="grid">
+
+    <div class="campo">
+      <label>Senior</label>
+      <select id="senior">
+        <option value="0">No</option>
+        <option value="1">Sí</option>
+      </select>
+    </div>
+
+    <div class="campo">
+      <label>Tenure (meses)</label>
+      <input id="tenure" type="number" value="12" min="0">
+    </div>
+
+    <div class="campo full">
+      <label>Total Charges</label>
+      <input id="charges" type="number" value="500" min="0">
+    </div>
+
+    <div class="campo">
+      <label>Contrato</label>
+      <select id="contrato">
+        <option value="month">Mes a mes</option>
+        <option value="one">1 año</option>
+        <option value="two">2 años</option>
+      </select>
+    </div>
+
+    <div class="campo">
+      <label>Método de pago</label>
+      <select id="pago">
+        <option value="electronic">Electronic check</option>
+        <option value="bank">Bank transfer</option>
+        <option value="credit">Credit card</option>
+        <option value="mail">Mailed check</option>
+      </select>
+    </div>
+
+    <div class="campo">
+      <label>Online Security</label>
+      <select id="seguridad">
+        <option value="no">No</option>
+        <option value="yes">Sí</option>
+        <option value="nointernet">Sin internet</option>
+      </select>
+    </div>
+
+    <div class="campo">
+      <label>Tech Support</label>
+      <select id="soporte">
+        <option value="no">No</option>
+        <option value="yes">Sí</option>
+        <option value="nointernet">Sin internet</option>
+      </select>
+    </div>
+
+  </div>
+
+  <button id="btnPredecir">Predecir</button>
+
+  <p id="msgError"></p>
+
+  <div id="resultado">
+    <h3 id="veredicto"></h3>
+    <p id="probTexto"></p>
+    <div class="barra">
+      <div class="barra-fill" id="barraFill"></div>
+    </div>
+
+    <div id="recomendaciones">
+      <h4>Acciones recomendadas</h4>
+      <ul id="listaRec"></ul>
+    </div>
+  </div>
+</div>
+
+<script>
+
+
+var btn       = document.getElementById('btnPredecir');
+var urlInput  = document.getElementById('inputUrl');
+var puntito   = document.getElementById('puntito');
+var msgError  = document.getElementById('msgError');
+var resultado = document.getElementById('resultado');
+var recBox    = document.getElementById('recomendaciones');
+var listaRec  = document.getElementById('listaRec');
+
+
+function armarPayload() {
+  var contrato  = document.getElementById('contrato').value;
+  var pago      = document.getElementById('pago').value;
+  var seguridad = document.getElementById('seguridad').value;
+  var soporte   = document.getElementById('soporte').value;
+
+  return {
+    SeniorCitizen: parseInt(document.getElementById('senior').value),
+    tenure:        parseInt(document.getElementById('tenure').value),
+    TotalCharges:  parseFloat(document.getElementById('charges').value),
+
+    Contract_Month_to_month: contrato === 'month' ? 1 : 0,
+    Contract_One_year:       contrato === 'one'   ? 1 : 0,
+    Contract_Two_year:       contrato === 'two'   ? 1 : 0,
+
+    PaymentMethod_Bank_transfer_automatic: pago === 'bank'       ? 1 : 0,
+    PaymentMethod_Credit_card_automatic:   pago === 'credit'     ? 1 : 0,
+    PaymentMethod_Electronic_check:        pago === 'electronic' ? 1 : 0,
+    PaymentMethod_Mailed_check:            pago === 'mail'       ? 1 : 0,
+
+    OnlineSecurity_No:                seguridad === 'no'          ? 1 : 0,
+    OnlineSecurity_Yes:               seguridad === 'yes'         ? 1 : 0,
+    OnlineSecurity_No_internet_service: seguridad === 'nointernet' ? 1 : 0,
+
+    TechSupport_No:                soporte === 'no'          ? 1 : 0,
+    TechSupport_Yes:               soporte === 'yes'         ? 1 : 0,
+    TechSupport_No_internet_service: soporte === 'nointernet' ? 1 : 0
+  };
+}
+
+
+function verRecomendaciones() {
+  var lista = [];
+
+  var contrato  = document.getElementById('contrato').value;
+  var seguridad = document.getElementById('seguridad').value;
+  var soporte   = document.getElementById('soporte').value;
+  var tenure    = parseInt(document.getElementById('tenure').value);
+  var pago      = document.getElementById('pago').value;
+
+  if (contrato === 'month')
+    lista.push('Ofrecer un contrato anual o de 2 años para reducir la fuga.');
+
+  if (seguridad === 'no')
+    lista.push('Activar Online Security para mayor retención.');
+
+  if (soporte === 'no')
+    lista.push('Ofrecer Tech Support para mejorar la experiencia.');
+
+  if (tenure < 12)
+    lista.push('Cliente nuevo — priorizar onboarding temprano.');
+
+  if (pago === 'electronic')
+    lista.push('Sugerir cambio de pago a débito automático.');
+
+  return lista;
+}
+
+function predecir() {
+  
+  btn.disabled = true;
+  btn.textContent = 'Calculando...';
+  msgError.style.display = 'none';
+  resultado.style.display = 'none';
+  recBox.style.display = 'none';
+
+  var baseUrl = urlInput.value.replace(/\/$/, '');
+  var payload = armarPayload();
+
+  fetch(baseUrl + '/predecir', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  })
+  .then(function(res) {
+    if (!res.ok) throw new Error('La API respondió con error ' + res.status);
+    return res.json();
+  })
+  .then(function(data) {
+    // mostrar resultado
+    document.getElementById('veredicto').textContent = data.resultado;
+
+    var porcentaje = (data.probabilidad_churn * 100).toFixed(1) + '%';
+    document.getElementById('probTexto').textContent = porcentaje;
+    document.getElementById('barraFill').style.width = porcentaje;
+
+    
+    resultado.className = data.prediccion === 1 ? 'churn' : 'nochurn';
+    resultado.style.display = 'block';
+
+    puntito.className = 'dot ok';
+
+    
+    if (data.prediccion === 1) {
+      var recs = verRecomendaciones();
+      if (recs.length > 0) {
+        listaRec.innerHTML = recs.map(function(r) {
+          return '<li>' + r + '</li>';
+        }).join('');
+        recBox.style.display = 'block';
+      }
+    }
+  })
+  .catch(function(err) {
+    msgError.textContent = 'Error: ' + err.message;
+    msgError.style.display = 'block';
+    puntito.className = 'dot error';
+  })
+  .finally(function() {
+    btn.disabled = false;
+    btn.textContent = 'Predecir';
+  });
+}
+
+btn.addEventListener('click', predecir);
+
+</script>
+</body>
+</html>
