@@ -23,9 +23,8 @@ Ingresa los datos a traves de una interfaz web, esta informacion se envia al bac
 
 **Modelo de machine learning** — Se entreno con un modelo de regresion logistica que obtuvo un Recall del 85% que indica que es optimo para detectar salida de clientes sin equivocarse mucho. Ademas para conectar la interfaz web con el modelo ML se probo diferentes combinaciones utilizando MLflow hasta encontrar el mejor resultado y se guardo el mejor resultado con joblib.
 
-**FastAPI** — A traves de una API `/predecir` conecta el backend con la interfaz web.
-
-**Web (frontend-backend)** — Esta interfaz ha sido creada con sugerencias y apoyo de inteligencia artificial generativa. Expone los valores mas importantes que se consideran ante la salida de un cliente.
+**FastAPI** — A traves de una API `/predecir` conectar los resultados entrenados con el modelo ML  con la interfaz web.
+**Web (frontend)** — Esta interfaz ha sido creada con sugerencias y apoyo de inteligencia artificial generativa. Expone los valores mas importantes que se consideran ante la salida de un cliente.
 
 **Infraestructura** — Se utilizo Docker para contener toda la interfaz en una imagen para que sea compatible con diferentes versiones de cada computadora.
 
